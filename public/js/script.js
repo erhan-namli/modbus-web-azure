@@ -17,7 +17,7 @@ $(document).ready(() => {
 
         //document.querySelector('.table').removeChild(document.querySelector('.table').lastChild)
         //document.querySelector('.table').replaceWith(makeTable(messageData.IotData))
-
+        document.querySelector('.table').innerHTML= '';
         document.querySelector('.table').appendChild(makeTable(messageData.IotData))
 
   
