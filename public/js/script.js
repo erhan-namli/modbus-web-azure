@@ -16,6 +16,8 @@ $(document).ready(() => {
         console.log(messageData)
 
         //document.querySelector('.table').removeChild(document.querySelector('.table').lastChild)
+        //document.querySelector('.table').replaceWith(makeTable(messageData.IotData))
+
         document.querySelector('.table').appendChild(makeTable(messageData.IotData))
 
   
@@ -99,7 +101,7 @@ var sample_json = [{"IpAdress": "192.168.1.200", "RegisterId": 1, "RegisterValue
 
 window.onload = function () {
 
-
+  document.querySelector('.table').appendChild(makeTable(sample_json))
 
 }
 
