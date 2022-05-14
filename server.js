@@ -26,8 +26,19 @@ app.use((req, res /* , next */) => {
   res.redirect('/');
 });
 
+
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
+
+wss.on('connection', ws => {
+  ws.on('message', message => {
+    // console.log("Client Message : " + message)
+
+    console.log(JSON.parse(message).method)
+
+  })
+})
+
 
 wss.broadcast = (data) => {
   wss.clients.forEach((client) => {
@@ -65,6 +76,3 @@ const eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsum
 })().catch();
 
 
-app.use('localhost:3000/erhan', (req, res) => {
-  console.log("Erhan")
-})
