@@ -68,7 +68,7 @@ var webSocketSendWriteRegisterData = function () {
 
 //////     MAKE TABLE FUNCTIONS ////////
 
-var sample_json = [{"IpAdress": "192.168.1.200", "RegisterId": 1, "RegisterValue": [0] },
+var sample_json = [{"IpAdress": "192.168.1.200", "RegisterId": 1, "RegisterValue": [0], "RegisterFunction":"Readable" },
   {
       "IpAdress": "192.168.1.200",
       "RegisterId": 2,
