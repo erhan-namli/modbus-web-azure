@@ -34,7 +34,36 @@ wss.on('connection', ws => {
   ws.on('message', message => {
     // console.log("Client Message : " + message)
 
-    console.log(JSON.parse(message).method)
+    if (JSON.parse(message).method == 'writeRegister') {
+      console.log("WRITE REGISTER METHOD WORKING")
+
+      console.log("Coming data is" + JSON.parse(message).sendRegisterId, JSON.parse(message).sendRegisterValue)
+
+      sendRegisterId =  String(JSON.parse(message).sendRegisterId)
+      sendRegisterValue = String(JSON.parse(message).sendRegisterValue)
+
+      var Client = require('azure-iothub').Client;
+      var Message = require('azure-iot-common').Message;
+
+      var connectionString = "HostName=modbus-tcp-iot.azure-devices.net;SharedAccessKeyName=service;SharedAccessKey=5ZCPyIUC7prmgWfQueBajDqSGtMUe6YZvwiiwYovB3A=";
+      var targetDevice = 'mypi';
+
+      var serviceClient = Client.fromConnectionString(connectionString);
+
+      serviceClient.open(function (err) {
+        if (err) {
+          console.error('Could not connect: ' + err.message);
+        } else {
+          console.log('Service client connected');
+          var message = new Message(sendRegisterId+"," +sendRegisterValue);
+          console.log('Sending message: ' + message.getData());
+          serviceClient.send(targetDevice, message);
+          console.log("Buraya geldi")
+        }
+      });
+
+
+    }
 
   })
 })

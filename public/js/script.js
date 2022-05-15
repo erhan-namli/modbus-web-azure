@@ -2,10 +2,11 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-undef */
 $(document).ready(() => {
+
     // if deployed to a site supporting SSL, use wss://
     const protocol = document.location.protocol.startsWith('https') ? 'wss://' : 'ws://';
     const webSocket = new WebSocket(protocol + location.host);
-  
+
     webSocket.onmessage = function onMessage(message) {
       try {
 
@@ -20,7 +21,20 @@ $(document).ready(() => {
         document.querySelector('.table').innerHTML= '';
         document.querySelector('.table').appendChild(makeTable(messageData.IotData))
 
-  
+        let dropwdownWRegisterButtons = document.querySelectorAll(".dropdown-item")
+
+        dropwdownWRegisterButtons.forEach( button => {
+
+          button.addEventListener('click', function(event) {
+            
+                let readOnlyInput = document.querySelector('#readOnlyInput')
+              
+                console.log(this.value)
+              
+                readOnlyInput.value = this.value
+          })
+        
+        })
         
       } catch (err) {
         
@@ -30,28 +44,42 @@ $(document).ready(() => {
     };
   });
 
-window.onload = function() {
 
-writeButton = document.getElementById('writeregisterbutton')
+window.onload = function () {
 
-writeButton.addEventListener('click', function() {
+  document.querySelector('.table').appendChild(makeTable(sample_json)) // Table maker function calling
 
-  console.log("Write Butonuna basıldı")
+  writeButton =  document.querySelector('#writeregisterbutton')
 
-  webSocketSendWriteRegisterData();
+  writeButton.addEventListener('click', function() {
 
-})
+    console.log("Butona Basıldı")
+
+    webSocketSendWriteRegisterData()
+
+  })
+
+
+  
+}
+
+
 
 var webSocketSendWriteRegisterData = function () {
  
   const protocol = document.location.protocol.startsWith('https') ? 'wss://' : 'ws://';
   const webSocket2 = new WebSocket(protocol + location.host)
 
-  registerId = document.getElementById('')
+  sendRegisterValue = document.querySelector('#writeRegisterValue').value
+
+  sendRegisterId = document.querySelector("#readOnlyInput").value
+
+  console.log("Veriler " + sendRegisterValue, sendRegisterId)
 
   data = JSON.stringify( {
-    method : 'connection',
-    payload : "connection payload"
+    method : 'writeRegister',
+    sendRegisterValue : sendRegisterValue,
+    sendRegisterId : sendRegisterId
   })
 
   webSocket2.onopen = function() {
@@ -63,18 +91,24 @@ var webSocketSendWriteRegisterData = function () {
   console.log(webSocket2)
 }
 
+function setRegisterIdtoReadOnlyInput(data){
+
+  let readOnlyInput = document.querySelector('#readOnlyInput')
+
+  console.log(data)
+
+  readOnlyInput.innerHTML = data
+
 }
 
 
 //////     MAKE TABLE FUNCTIONS ////////
 
-var sample_json = [{"IpAdress": "192.168.1.200", "RegisterId": 1, "RegisterValue": [0], "RegisterFunction":"Readable" },
+var sample_json = [{"IpAdress": "192.168.1.200", "RegisterId": 1, "RegisterValue": [0], "RegisterFunction":"Writable" },
   {
       "IpAdress": "192.168.1.200",
       "RegisterId": 2,
-      "RegisterValue": [
-          0
-      ]
+      "RegisterValue": [0], "RegisterFunction":"Writable" 
   },
   {
       "IpAdress": "192.168.1.200",
@@ -99,18 +133,10 @@ var sample_json = [{"IpAdress": "192.168.1.200", "RegisterId": 1, "RegisterValue
   }
 ]
 
-window.onload = function () {
-
-  document.querySelector('.table').appendChild(makeTable(sample_json))
-
-}
-
 function makeNewRegisterValues(json_objects_arr) {
 
   var newTd = document.createElement('td');
   newTd.id = "tdRegValue";
-
-
 
 }
 
@@ -162,6 +188,8 @@ function makeTBODY(json, keys) {
       registerButton.className = "dropdown-item";
       registerButton.type = 'button'
       registerButton.value = object['RegisterId'] 
+
+      registerButton.onClick = setRegisterIdtoReadOnlyInput(object['RegisterId'])
 
       registerButton.innerHTML = object['RegisterId']
 

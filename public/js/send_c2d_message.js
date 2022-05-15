@@ -27,7 +27,7 @@ function printResultFor(op) {
     } else {
       console.log('Service client connected');
       serviceClient.getFeedbackReceiver(receiveFeedback);
-      var message = new Message('Cloud to device message.');
+      var message = new Message('Erhan');
       message.ack = 'full';
       message.messageId = "My Message ID";
       console.log('Sending message: ' + message.getData());
