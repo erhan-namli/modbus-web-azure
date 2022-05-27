@@ -2,6 +2,87 @@
 
 This is an app for managing devices with modbus tcp/ip communication
 
+
+## Web Application
+
+![Modbus Web App](modbuswebapp.jpg)
+
+This web application pulls data from azure iot hub and displays the data in tables, it also allows us to access the device and change the register values thanks to the connection provided by azure. 
+
+This web app simply built on the following codes
+
+**Reading messages coming on azure iot hub**
+```node
+const EventHubReader = require('./scripts/event-hub-reader.js');
+const WebSocket = require('ws');
+
+let iotHubConnectionString = "CONNECTION_STRING"
+let consumergroup = "CONSUMER_GROUP"
+
+const wss = new WebSocket.Server({ server }); // This web socket server provide us communicate with client browser side
+
+const eventHubReader = new EventHubReader(iotHubConnectionString, consumergroup)
+
+  (async () => {
+    await eventHubReader.startReadMessage((message, date, deviceId) => {
+      try {
+        const payload = {
+          IotData: message,
+          MessageDate: date || Date.now().toISOString(),
+          DeviceId: deviceId,
+        };
+  
+        console.log(payload)
+        wss.broadcast(JSON.stringify(payload));
+      } catch (err) {
+        console.error('Error broadcasting: [%s] from [%s].', err, message);
+      }
+    });
+  })().catch();
+
+```
+**Sending messages to azure iot hub**
+
+```node
+wss.on('connection', ws => {
+  ws.on('message', message => {
+    // console.log("Client Message : " + message)
+
+    if (JSON.parse(message).method == 'writeRegister') {
+      console.log("WRITE REGISTER METHOD WORKING")
+
+      console.log("Coming data is" + JSON.parse(message).sendRegisterId, JSON.parse(message).sendRegisterValue)
+
+      sendRegisterId =  String(JSON.parse(message).sendRegisterId)
+      sendRegisterValue = String(JSON.parse(message).sendRegisterValue)
+
+      var Client = require('azure-iothub').Client;
+      var Message = require('azure-iot-common').Message;
+
+      var connectionString = "HostName=modbus-tcp-iot.azure-devices.net;SharedAccessKeyName=service;SharedAccessKey=5ZCPyIUC7prmgWfQueBajDqSGtMUe6YZvwiiwYovB3A=";
+      var targetDevice = 'mypi';
+
+      var serviceClient = Client.fromConnectionString(connectionString);
+
+      serviceClient.open(function (err) {
+        if (err) {
+          console.error('Could not connect: ' + err.message);
+        } else {
+          console.log('Service client connected');
+          var message = new Message(sendRegisterId+"," +sendRegisterValue);
+          console.log('Sending message: ' + message.getData());
+          serviceClient.send(targetDevice, message);
+          console.log("Buraya geldi")
+        }
+      });
+
+
+    }
+
+  })
+})
+```
+
 ## Device Manager
 
 Device manager works in raspberry pi for managing devices which connected to shared network
@@ -74,5 +155,3 @@ def getDatafromAzure():
 ### What purpose does device manager serve?
 Device manager provide us to send the memory we want and its values ​​to the azure iot hub, we can do both read and write operations with this program. 
 
-
-## Web Application
