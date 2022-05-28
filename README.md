@@ -1,16 +1,17 @@
 # Modbus Web App
 
-This is an app for managing devices with modbus tcp/ip communication
+## Introduction
+
+This is an app for managing devices with modbus tcp/ip communication, the process works as in the flow chart below.
 
 ![Flowchart](flowchart.jpg)
 
-**As can be seen from the flow chart above, communication takes place in this way.**
 
 ## Web Application
 
-![Modbus Web App](modbuswebapp.png)
-
 This web application pulls data from azure iot hub and displays the data in tables, it also allows us to access the device and change the register values thanks to the connection provided by azure. 
+
+![Modbus Web App](modbuswebapp.png)
 
 This web app simply built on the following codes
 
