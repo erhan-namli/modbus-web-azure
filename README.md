@@ -5,7 +5,7 @@ This is an app for managing devices with modbus tcp/ip communication
 
 ## Web Application
 
-![Modbus Web App](modbuswebapp.jpg)
+![Modbus Web App](modbuswebapp.png)
 
 This web application pulls data from azure iot hub and displays the data in tables, it also allows us to access the device and change the register values thanks to the connection provided by azure. 
 
@@ -87,7 +87,7 @@ wss.on('connection', ws => {
 
 Device manager works in raspberry pi for managing devices which connected to shared network
 
-![Device Manager](devicemanager.jpg)
+![Device Manager](devicemanager.png)
 
 This app directly connected to azure iot hub, thanks to this method we can get that register values and register addresses almost every second (it depends which clock you choosed). 
 
