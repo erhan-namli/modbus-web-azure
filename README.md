@@ -4,6 +4,7 @@ This is an app for managing devices with modbus tcp/ip communication
 
 ![Flowchart](flowchart.jpg)
 
+**As can be seen from the flow chart above, communication takes place in this way.**
 
 ## Web Application
 
