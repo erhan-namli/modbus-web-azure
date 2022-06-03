@@ -1,6 +1,4 @@
-/* eslint-disable max-classes-per-file */
-/* eslint-disable no-restricted-globals */
-/* eslint-disable no-undef */
+
 $(document).ready(() => {
 
     // if deployed to a site supporting SSL, use wss://
@@ -12,14 +10,40 @@ $(document).ready(() => {
       try {
 
         connectionState = document.getElementById('deviceStatus')
-        connectionState.style.backgroundColor = 'green'
-        connectionState.innerText = 'DeviceConnected'
+        tcpipStatus = document.getElementById('tcpipStatus')
+
         const messageData = JSON.parse(message.data);
+
         console.log(messageData)
 
-        document.querySelector('.table').innerHTML= '';
-        document.querySelector('.table').appendChild(makeTable(messageData.IotData))
+        console.log(messageData.Type)
 
+        if(messageData.Type == "error"){
+
+            connectionState.style.backgroundColor = 'green'
+            connectionState.innerText = 'Device Connected'
+        
+            tcpipStatus.style.backgroundColor = "white"
+            tcpipStatus.innerText = "TCP/IP Communication is not Provided"
+
+            window.alert("Please check your device's IP!");
+
+            console.log("TCP COMMUNICATION HATASI")
+
+        }else if (messageData.Type == 'iotdata'){
+
+            tcpipStatus.innerText = "TCP/IP Communication is provided"
+            tcpipStatus.style.backgroundColor = "green"
+ 
+
+            document.querySelector('.table').innerHTML= '';
+            document.querySelector('.table').appendChild(makeTable(messageData.IotData))
+
+        }
+
+        connectionState.style.backgroundColor = 'green'
+        connectionState.innerText = 'IoT Hub to Device Communication is provided'
+    
         let dropwdownWRegisterButtons = document.querySelectorAll(".dropdown-item")
 
         dropwdownWRegisterButtons.forEach( button => {
@@ -27,9 +51,7 @@ $(document).ready(() => {
           button.addEventListener('click', function(event) {
             
                 let readOnlyInput = document.querySelector('#readOnlyInput')
-              
-                console.log(this.value)
-              
+
                 readOnlyInput.value = this.value
           })
         
@@ -124,8 +146,6 @@ var webSocketSendWriteRegisterData = function () {
 function setRegisterIdtoReadOnlyInput(data){
 
   let readOnlyInput = document.querySelector('#readOnlyInput')
-
-  console.log(data)
 
   readOnlyInput.innerHTML = data
 
@@ -723,8 +743,6 @@ function makeTBODY(json, keys) {
 
     if (  object['RegisterFunction'] =='Writable' ){
 
-      console.log(dropdownitemlist.includes(object['RegisterId']))
-
       let registerDropdown = document.getElementById('dropdownWRegisters')
 
       let registerButton = document.createElement('button');
@@ -735,7 +753,7 @@ function makeTBODY(json, keys) {
 
       registerButton.onClick = setRegisterIdtoReadOnlyInput(object['RegisterId'])
 
-      registerButton.innerHTML = object['RegisterId']
+      registerButton.innerHTML = object['ParameterNo']
 
       writableRegistersDropdown.childNodes.forEach( function (obj) {
 

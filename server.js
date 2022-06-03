@@ -26,10 +26,8 @@ app.use((req, res /* , next */) => {
   res.redirect('/');
 });
 
-
 let server = http.createServer(app);
 let wss = new WebSocket.Server({ server });
-
 
 const eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
 
@@ -37,6 +35,7 @@ const eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsum
   await eventHubReader.startReadMessage((message, date, deviceId) => {
     try {
       const payload = {
+        Type : message[0].type,
         IotData: message,
         MessageDate: date || Date.now().toISOString(),
         DeviceId: deviceId,
